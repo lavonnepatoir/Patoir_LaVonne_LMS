@@ -4,39 +4,54 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
+//LaVonne Patoir, CEN3024C-14320, 10/05/24
+//Software Development I
+
+//The purpose of this class is to execute library actions
+
 public class Library {
-    //creates a list where all the books will be stored
-    List<Book> library = new ArrayList<>();
+    List<Book> catalogue = new ArrayList<>();
 
-    //takes the Book object as input and adds to it
     public void addBook(Book book) {
-        library.add(book);
+    //Purpose: adds a book to the library, Arguments: Book (bookID, author, title), Return Value: none/void
+        catalogue.add(book);
     }
 
-    //removes if a book matches the given bookID
     public void removeBook(String bookID) {
-        library.removeIf(book -> book.bookID.equals(bookID));
+    //Purpose: removes book from the library, Arguments: String bookID, Return Value: none/void
+        catalogue.removeIf(book -> book.bookID.equals(bookID));
     }
 
-    //prints all books currently in the library
+    public boolean checkoutBook(String title) {
+    //Purpose: searches the library and removes a book if found, Arguments: String title, Return Value: boolean
+        for (Book book : catalogue) {
+            if (book.title.equals(title)) {
+                catalogue.remove(book);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
     public void listAllBooks() {
-        for (Book book : library) {
+    //Purpose: displays all books currently in library, Arguments: none, Return Value: none/void
+        for (Book book : catalogue) {
             System.out.println(book);
         }
     }
 
     public void addBooksFromFile(String fileName) {
-    //splits each line input into parts, and creates a Book object respectively
+    //Purpose: adds books to library by reading from file, Arguments: String fileName, Return Value: none/void
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] details = line.split(",");
                 //the comma is used to distinguish the object elements from each other
-                library.add(new Book(details[0].trim(), details[1].trim(), details[2].trim()));
+                catalogue.add(new Book(details[0].trim(), details[1].trim(), details[2].trim()));
             }
         } catch (IOException e) {
-            System.out.println("Error." + e.getMessage());
-            //try-catch in case of an error
+            System.out.println("Error");
         }
     }
 }
