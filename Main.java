@@ -39,7 +39,7 @@ public class Main {
         if (checkedOut) {
             System.out.println("This book has been checked out.");
         } else {
-            System.out.println("This book was not found.");
+            System.out.println("This book is already checked out.");
         }
         System.out.println("Current database printing...");
         databaseActions.listAllBooks();
