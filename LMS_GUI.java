@@ -104,7 +104,7 @@ public class LMS_GUI {
         Book userInput = null;
         //This method is used since
         for (Book book : library.catalogue) {
-            if (book.getTitle().equals(barcode)) {
+            if (book.getBookID().equals(barcode)) {
                 userInput = book;
                 break;
             }
