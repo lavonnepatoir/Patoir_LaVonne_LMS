@@ -1,15 +1,21 @@
 import java.time.LocalDate;
 
-//LaVonne Patoir, CEN3024C-14320,10/19/24
+//LaVonne Patoir, CEN3024C-14320, 11/03/2024
 //Software Development I
 //The purpose of this class is to define the elements of the Book object, and return a string listing an individual book
 
 public class Book {
-    String bookID;
-    String author;
-    String title;
-    String bookStatus; // "checked in" or "checked out"
-    LocalDate dueDate;
+    private String bookID;
+    private String author;
+    private String title;
+    private String bookStatus; // "checked in" or "out"
+    private LocalDate dueDate;
+
+    public String getBookID() { return bookID; }
+    public String getTitle() { return title; }
+    public String getAuthor() { return author; }
+    public String getBookStatus() { return bookStatus; }
+    public LocalDate getDueDate() { return dueDate; }
 
     public Book(String bookID, String title, String author) {
     //Purpose: initializes new book object; Arguments: Strings title, author, bookID; Return Value: none
@@ -20,18 +26,15 @@ public class Book {
         this.dueDate = null;
     }
 
+
     public void checkinBook() {
-    //Purpose: changes the property of a book to being checked in; Arguments: none; Return Value: none
+    //Purpose: Marks book as checked in and resets the due date; Arguments: none; Return Value: none
         this.bookStatus = "Checked in";
         this.dueDate = null;
     }
 
-    public String toString() {
-    //Purpose: returns a string of the Book object; Arguments: none; Return Value: a string
-        return bookID + ", " + author + ", " + title;
-    }
-
     public boolean checkoutBook() {
+    //Purpose: Marks book as checked out and sets a due date 4 weeks later; Arguments: none; Return Value: boolean
         if (this.bookStatus.equals("Checked out")) {
             return false;
         }
@@ -39,4 +42,12 @@ public class Book {
         this.dueDate = LocalDate.now().plusWeeks(4);
         return true;
     }
+
+    @Override
+    public String toString() {
+    //Purpose: Returns a string containing a book's details; Arguments: none; Return Value: String
+        String dueDateString = (dueDate != null) ? dueDate.toString() : "No due date";
+        return bookID + ", " + author + ", " + title + ", " + bookStatus + ", Due: " + dueDateString;
+    }
 }
+
