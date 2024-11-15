@@ -2,13 +2,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
-//LaVonne Patoir, CEN3024C-14320, 11/03/2024
+//LaVonne Patoir, CEN3024C-14320, 11/14/24
 //Software Development I
 //The purpose of this class is to set up action listeners for GUI components
 
 public class LMS_GUI {
-
     private Library library = new Library();
 
     private JPanel mainPanel;
@@ -29,164 +29,152 @@ public class LMS_GUI {
     private JButton removeBookByTitleButton;
     private JLabel checkInLabel;
 
-    public LMS_GUI() {
-    //Purpose: Constructor to set up GUI components; Arguments: none; Return Value: none
-        addFileButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadFile();
-                clearTextFields();
-            }
-        });
+        public LMS_GUI() {
+            //Purpose: Constructor to set up GUI components; Arguments: none; Return Value: none
 
-        removeBookByBarcodeButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeBookByBarcode();
-                clearTextFields();
-            }
-        });
-
-        removeBookByTitleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                removeBookByTitle();
-                clearTextFields();
-            }
-        });
-
-        checkOutBookButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                checkoutBookByTitle();
-                clearTextFields();
-            }
-        });
-
-        checkInBookButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                checkinBook();
-                clearTextFields();
-            }
-        });
-
-        exitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-
-        updateBookTable();
-    }
-
-    private void loadFile() {
-    //Purpose: Loads books from a user-given file into the library and updates the table; Arguments: none; Return Value: none/void
-        String fileName = fileTextField.getText();
-        try {
-            library.addBooksFromFile(fileName);
+            library.connect();
             updateBookTable();
-            showMessage("File upload successful: " + fileName);
-        } catch (Exception e) {
-            showMessage("File not found: " + fileName);
+
+            addFileButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    loadFile();
+                    clearTextFields();
+                }
+            });
+
+            removeBookByBarcodeButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    removeBookByBarcode();
+                    clearTextFields();
+                }
+            });
+
+            removeBookByTitleButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    removeBookByTitle();
+                    clearTextFields();
+                }
+            });
+
+            checkOutBookButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    checkoutBookByTitle();
+                    clearTextFields();
+                }
+            });
+
+            checkInBookButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    checkinBook();
+                    clearTextFields();
+                }
+            });
+
+            exitButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+
+            updateBookTable();
         }
-    }
 
-    private void showMessage(String message) {
-    //Purpose: Displays messages to user via a dialog box; Arguments: String message; Return Value: none/void
-        JOptionPane.showMessageDialog(null, message);
-    }
-
-    private void removeBookByBarcode() {
-    //Purpose: Removes a book from the library by its barcode (aka 'bookID') and updates the table; Arguments: none; Return Value: none/void
-        String barcode = barcodeTextField.getText();
-        Book userInput = null;
-        //This method is used since
-        for (Book book : library.catalogue) {
-            if (book.getBookID().equals(barcode)) {
-                userInput = book;
-                break;
+        private void loadFile() {
+        //Purpose: Loads books from a user-given file into the library and updates the table; Arguments: none; Return Value: none/void
+            String fileName = fileTextField.getText();
+            try {
+                library.addBooksFromFile(fileName);
+                updateBookTable();
+                showMessage("File upload successful: " + fileName);
+            } catch (Exception e) {
+                showMessage("File not found: " + fileName);
             }
         }
-        if (userInput != null) {
-            library.catalogue.remove(userInput);
-            updateBookTable();
-            showMessage("The book ID '" + barcode + "' has been removed.");
-        } else {
-            showMessage("The book ID '" + barcode + "' was not found.");
-        }
-    }
 
-    private void removeBookByTitle() {
-    //Purpose: Removes a book from the library by its title and updates the table; Arguments: none; Return Value: none/void
-        String title = removeBookByTitleTextField.getText();
-        Book userInput = null;
-        for (Book book : library.catalogue) {
-            if (book.getTitle().equals(title)) {
-                userInput = book;
-                break;
+        private void showMessage(String message) {
+        //Purpose: Displays messages to user via a dialog box; Arguments: String message; Return Value: none/void
+            JOptionPane.showMessageDialog(null, message);
+        }
+
+        private void removeBookByBarcode() {
+        //Purpose: Removes a book from the library by its barcode (aka 'bookID') and updates the table; Arguments: none; Return Value: none/void
+            String barcode = barcodeTextField.getText();
+            boolean checkedOut = library.removeBook(barcode); // Use the checkout method by barcode
+
+            updateBookTable();
+
+            if (checkedOut) {
+                showMessage("The book with ID '" + barcode + "' has been checked out.");
             }
         }
-        if (userInput != null) {
-            library.catalogue.remove(userInput);
+
+        private void removeBookByTitle() {
+        //Purpose: Removes a book from the library by its title and updates the table; Arguments: none; Return Value: none/void
+            String title = removeBookByTitleTextField.getText();
+            boolean removed = library.removeBookByTitle(title); // Remove book by title in database
+
             updateBookTable();
-            showMessage("The book " + title + " has been removed.");
-        } else {
-            showMessage("The book " + title + " was not found.");
-        }
-    }
 
-    private void checkinBook() {
-    //Purpose: Checks in a book by its title and updates the table; Arguments: none; Return Value: none/void
-        String title = checkInTextField.getText();
-        Book book = library.catalogue.stream().filter(b -> b.getTitle().equals(title)).findFirst().orElse(null);
-        if (book != null) {
-            book.checkinBook();
+            if (removed) {
+                showMessage("The book titled '" + title + "' has been removed.");
+            }
+        }
+
+        private void checkinBook() {
+        //Purpose: Checks in a book by its title and updates the table; Arguments: none; Return Value: none/void
+            String title = checkInTextField.getText();
+            boolean checkedIn = library.checkinBook(title);
             updateBookTable();
-            showMessage("The book '" + title + "' has been checked in.");
-        } else {
-            showMessage("The book '" + title + "' was not found.");
+
+            if (checkedIn) {
+                showMessage("The book titled '" + title + "' has been checked in.");
+            }
         }
-    }
 
-    private void checkoutBookByTitle() {
-    //Purpose: Checks out a book by its title and updates the table; Arguments: none; Return Value: none/void
-        String title = titleTextField.getText();
-        boolean checkedOut = library.checkoutBook(title);
-        updateBookTable();
+        private void checkoutBookByTitle() {
+        //Purpose: Checks out a book by its title and updates the table; Arguments: none; Return Value: none/void
+            String title = titleTextField.getText();
+            boolean checkedOut = library.checkoutBook(title);
+            updateBookTable();
 
-        if (checkedOut) {
-            showMessage("Book titled '" + title + "' has been checked out.");
-        } else {
-            showMessage("Book titled '" + title + "' is already checked out or not found.");
+            if (checkedOut) {
+                showMessage("Book titled '" + title + "' has been checked out.");
+            }
         }
-    }
 
-    private void updateBookTable() {
-    //Purpose: Updates the GUI JTable with the current catalogue from the library; Arguments: none; Return Value: none/void
-        DefaultTableModel model = new DefaultTableModel(new Object[]{"bookID", "title", "author", "bookStatus"}, 0);
-        for (Book book : library.catalogue) {
-            model.addRow(new Object[]{book.getBookID(), book.getTitle(), book.getAuthor(), book.getBookStatus()});
+        private void updateBookTable() {
+        //Purpose: Updates the GUI JTable with the current catalogue from the library; Arguments: none; Return Value: none/void
+            DefaultTableModel model = new DefaultTableModel(new Object[]{"bookID", "title", "author", "bookStatus", "dueDate"}, 0);
+            List<Book> books = library.listAllBooks();
+
+            for (Book book : books) {
+                model.addRow(new Object[]{book.getBookID(), book.getTitle(), book.getAuthor(), book.getBookStatus(), book.getDueDate()});
+            }
+            displayBooksTable.setModel(model);
         }
-        displayBooksTable.setModel(model);
-    }
 
-    private void clearTextFields() {
-    //Purpose: Clears the GUI text fields after each action; Arguments: none; Return Value: none/void
-        fileTextField.setText("");
-        barcodeTextField.setText("");
-        titleTextField.setText("");
-        checkInTextField.setText("");
-        removeBookByTitleTextField.setText("");
-    }
+        private void clearTextFields() {
+        //Purpose: Clears the GUI text fields after each action; Arguments: none; Return Value: none/void
+            fileTextField.setText("");
+            barcodeTextField.setText("");
+            titleTextField.setText("");
+            checkInTextField.setText("");
+            removeBookByTitleTextField.setText("");
+        }
 
-    public static void main(String[] args) {
-    //Purpose: Main method to initialize and display the GUI window; Arguments: String[] args; Return Value: none/void
-        JFrame frame = new JFrame("Welcome to the Library Management System!");
-        frame.setContentPane(new LMS_GUI().mainPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
-    }
+        public static void main(String[] args) {
+        //Purpose: Main method to initialize and display the GUI window; Arguments: String[] args; Return Value: none/void
+            JFrame frame = new JFrame("Welcome to the Library Management System!");
+            frame.setContentPane(new LMS_GUI().mainPanel);
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.pack();
+            frame.setVisible(true);
+        }
+
 }
