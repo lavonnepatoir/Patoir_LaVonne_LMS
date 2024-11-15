@@ -52,11 +52,11 @@ public class Library {
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, bookID);
             int rowsAffected = pstmt.executeUpdate();
-            System.out.println(rowsAffected > 0 ? "Book removed." : "Book not found.");
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Error removing book: " + e.getMessage());
         }
-        return false;
+        return false; 
     }
 
     public boolean removeBookByTitle(String title) {
@@ -66,7 +66,7 @@ public class Library {
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
             pstmt.setString(1, title);
             int rowsAffected = pstmt.executeUpdate();
-            System.out.println(rowsAffected > 0 ? "Book removed." : "Book not found.");
+            return rowsAffected > 0;
         } catch (SQLException e) {
             System.out.println("Error removing book: " + e.getMessage());
         }
