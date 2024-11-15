@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-//LaVonne Patoir, CEN3024C-14320, 11/03/2024
+//LaVonne Patoir, CEN3024C-14320, 11/14/24
 //Software Development I
 //The purpose of this class is to define the elements of the Book object, and return a string listing an individual book
 
@@ -11,21 +11,25 @@ public class Book {
     private String bookStatus; // "checked in" or "out"
     private LocalDate dueDate;
 
+    public Book(String bookID, String title, String author, String status, LocalDate dueDate) {
+    //Purpose: initializes new book object; Arguments: Strings title, author, bookID, status and a LocalDate; Return Value: none
+        this.bookID = bookID;
+        this.title = title;
+        this.author = author;
+        this.bookStatus = status;
+        this.dueDate = dueDate;
+    }
+
+    public Book(String bookID, String title, String author) {
+    //Purpose: initializes new book object with some default values, Arguments: Strings bookID, title, author; Return Value: none
+        this(bookID, title, author, "Checked in", null);
+    }
+
     public String getBookID() { return bookID; }
     public String getTitle() { return title; }
     public String getAuthor() { return author; }
     public String getBookStatus() { return bookStatus; }
     public LocalDate getDueDate() { return dueDate; }
-
-    public Book(String bookID, String title, String author) {
-    //Purpose: initializes new book object; Arguments: Strings title, author, bookID; Return Value: none
-        this.bookID = bookID;
-        this.title = title;
-        this.author = author;
-        this.bookStatus = "Checked in";
-        this.dueDate = null;
-    }
-
 
     public void checkinBook() {
     //Purpose: Marks book as checked in and resets the due date; Arguments: none; Return Value: none
