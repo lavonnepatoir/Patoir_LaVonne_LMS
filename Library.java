@@ -8,15 +8,21 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 
-//LaVonne Patoir, CEN3024C-14320, 11/14/24
-//Software Development I
-//The purpose of this class is to execute library actions
+
+/**
+ * LaVonne Patoir, CEN3024C-14320, 11/24/24
+ * Software Development I
+ * The purpose of this class is to execute library actions.
+ */
 
 public class Library {
     private Connection conn;
 
+    /**
+         * Connects program to a database hosted on my local computer
+         * @return none/void
+     */
     public void connect() {
-    //Purpose: connects program to a database hosted on my local computer; Arguments: none: Return Value: none/void
         try {
             String url = "jdbc:sqlserver://localhost:1433;databaseName=LMSDatabase;encrypt=false"; //Encryption set to false for development purposes
             String user = "valencia2024";
@@ -28,8 +34,13 @@ public class Library {
         }
     }
 
+    /**
+     * Adds a book to the library
+     *
+     * @param book (bookID, author, title)
+     * @return none
+     */
     public void addBook(Book book) {
-    //Purpose: adds a book to the library, Arguments: Book (bookID, author, title), Return Value: none/void
         connect();
         String query = "INSERT INTO Books (barcode, title, author, status, due_date) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -45,8 +56,14 @@ public class Library {
         }
     }
 
+    /**
+     * Removes a book from the library by its barcode.
+     *
+     * @param bookID the unique identifier (barcode) of the book to be removed
+     * @return true if the book was successfully removed, false otherwise
+     */
+
     public boolean removeBook(String bookID) {
-    //Purpose: removes book from the library, Arguments: String bookID, Return Value: boolean
         connect();
         String query = "DELETE FROM Books WHERE barcode = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -56,11 +73,16 @@ public class Library {
         } catch (SQLException e) {
             System.out.println("Error removing book: " + e.getMessage());
         }
-        return false; 
+        return false;
     }
 
+    /**
+     * Removes book from the library by its title
+     *
+     * @param title
+     * @return boolean
+     */
     public boolean removeBookByTitle(String title) {
-    //Purpose: removes book from the library, Arguments: String title, Return Value: boolean
         connect();
         String query = "DELETE FROM Books WHERE title = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -73,8 +95,13 @@ public class Library {
         return false;
     }
 
+    /**
+     * Changes status of a book to "checked out" if found
+     *
+     * @param title
+     * @return If title is found, table is updated. If false, error message.
+     */
     public boolean checkoutBook(String title) {
-    //Purpose: checks out a book by its title if found and sets its status to "Checked out"; Arguments: String title; Return Value: boolean
         connect();
         String query = "UPDATE Books SET status = 'Checked out', due_date = ? WHERE title = ? AND status = 'Checked in'";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -88,8 +115,13 @@ public class Library {
         }
     }
 
+    /**
+     * Checks out a book by looking for its unique barcode/bookID and changing its status
+     *
+     * @param bookID
+     * @return If found, status is changed. If false, error message.
+     */
     public boolean checkoutBookByID(String bookID) {
-    //Purpose: checks out a book by its bookID if found and sets its status to "Checked out"; Arguments: String bookID; Return Value: boolean
         connect();
         String query = "UPDATE Books SET status = 'Checked out', due_date = ? WHERE barcode = ? AND status = 'Checked in'";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -103,8 +135,13 @@ public class Library {
         }
     }
 
+    /**
+     * Checks in a book by its title by changing its status
+     *
+     * @param title
+     * @return If false (book is not found), error message is displayed.
+     */
     public boolean checkinBook(String title) {
-    //Purpose: checks out a book by its title if found and sets its status to "Checked out"; Arguments: String title; Return Value: boolean
         connect();
         String query = "UPDATE Books SET status = 'Checked in', due_date = NULL WHERE title = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(query)) {
@@ -117,8 +154,12 @@ public class Library {
         }
     }
 
+    /**
+     * Displays all books currently in library
+     *
+     * @return a list of books currently stored in the database
+     */
     public List<Book> listAllBooks() {
-    //Purpose: displays all books currently in library, Arguments: none, Return Value: none/void
         List<Book> books = new ArrayList<>();
         if (conn == null) {
             System.out.println("No database connection, call connect() first.");
@@ -141,9 +182,13 @@ public class Library {
         return books;
     }
 
-
+    /**
+     * Adds a book to the library "catalogue" by reading froma file
+     *
+     * @param fileName
+     * @return none
+     */
     public void addBooksFromFile(String fileName) {
-    //Purpose: Adds books to the library "catalogue" by reading from a file; Arguments: String fileName; Return Value: none
         connect();
         String query = "INSERT INTO Books (barcode, title, author, genre, status, due_date) VALUES (?, ?, ?, ?, ?, ?)";
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
