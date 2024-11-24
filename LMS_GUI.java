@@ -4,9 +4,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-//LaVonne Patoir, CEN3024C-14320, 11/14/24
-//Software Development I
-//The purpose of this class is to set up action listeners for GUI components
+/**
+ * LaVonne Patoir, CEN3024C-14320, 11/14/24
+ * Software Development I
+ * The purpose of this class is to set up action listeners for GUI components
+ */
+
 
 public class LMS_GUI {
     private Library library = new Library();
@@ -29,8 +32,10 @@ public class LMS_GUI {
     private JButton removeBookByTitleButton;
     private JLabel checkInLabel;
 
+    /**
+     * Constructor to set up GUI components
+     */
     public LMS_GUI() {
-        //Purpose: Constructor to set up GUI components; Arguments: none; Return Value: none
 
         library.connect();
         updateBookTable();
@@ -85,8 +90,10 @@ public class LMS_GUI {
         updateBookTable();
     }
 
+    /**
+     * Loads books from a user-given file and updates the GUI table.
+     */
     private void loadFile() {
-        //Purpose: Loads books from a user-given file into the library and updates the table; Arguments: none; Return Value: none/void
         String fileName = fileTextField.getText();
         try {
             library.addBooksFromFile(fileName);
@@ -97,13 +104,17 @@ public class LMS_GUI {
         }
     }
 
+    /**
+     * Displays messages to user via a dialog box
+     */
     private void showMessage(String message) {
-        //Purpose: Displays messages to user via a dialog box; Arguments: String message; Return Value: none/void
         JOptionPane.showMessageDialog(null, message);
     }
 
+    /**
+     * Removes a book from the library by its barcode (aka 'bookID') and updates the table
+     */
     private void removeBookByBarcode() {
-        //Purpose: Removes a book from the library by its barcode (aka 'bookID') and updates the table; Arguments: none; Return Value: none/void
         String barcode = barcodeTextField.getText();
         boolean checkedOut = library.removeBook(barcode); // Use the checkout method by barcode
 
@@ -116,6 +127,9 @@ public class LMS_GUI {
         }
     }
 
+    /**
+     * Removes a book from the library by its title and updates the table
+     */
     private void removeBookByTitle() {
         String title = removeBookByTitleTextField.getText();
         boolean removed = library.removeBookByTitle(title); // Attempt to remove the book by title from the database
@@ -129,9 +143,10 @@ public class LMS_GUI {
         }
     }
 
-
+    /**
+     * Checks in a book by its title and updates the table
+     */
     private void checkinBook() {
-        //Purpose: Checks in a book by its title and updates the table; Arguments: none; Return Value: none/void
         String title = checkInTextField.getText();
         boolean checkedIn = library.checkinBook(title);
         updateBookTable();
@@ -143,8 +158,10 @@ public class LMS_GUI {
         }
     }
 
+    /**
+     * Checks outu a book by its title and updates the table
+     */
     private void checkoutBookByTitle() {
-        //Purpose: Checks out a book by its title and updates the table; Arguments: none; Return Value: none/void
         String title = titleTextField.getText();
         boolean checkedOut = library.checkoutBook(title);
         updateBookTable();
@@ -156,8 +173,10 @@ public class LMS_GUI {
         }
     }
 
+    /**
+     * Updates the GUI JTable with the current catalogue from the library
+     */
     private void updateBookTable() {
-        //Purpose: Updates the GUI JTable with the current catalogue from the library; Arguments: none; Return Value: none/void
         DefaultTableModel model = new DefaultTableModel(new Object[]{"bookID", "title", "author", "bookStatus", "dueDate"}, 0);
         List<Book> books = library.listAllBooks();
 
@@ -167,8 +186,10 @@ public class LMS_GUI {
         displayBooksTable.setModel(model);
     }
 
+    /**
+     * Clears the GUI text fields after each action
+     */
     private void clearTextFields() {
-        //Purpose: Clears the GUI text fields after each action; Arguments: none; Return Value: none/void
         fileTextField.setText("");
         barcodeTextField.setText("");
         titleTextField.setText("");
@@ -176,8 +197,12 @@ public class LMS_GUI {
         removeBookByTitleTextField.setText("");
     }
 
+    /**
+     * The main method to launch the GUI
+     *
+     * @param args command
+     */
     public static void main(String[] args) {
-        //Purpose: Main method to initialize and display the GUI window; Arguments: String[] args; Return Value: none/void
         JFrame frame = new JFrame("Welcome to the Library Management System!");
         frame.setContentPane(new LMS_GUI().mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
