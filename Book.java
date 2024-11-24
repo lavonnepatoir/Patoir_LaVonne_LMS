@@ -1,8 +1,10 @@
 import java.time.LocalDate;
 
-//LaVonne Patoir, CEN3024C-14320, 11/14/24
-//Software Development I
-//The purpose of this class is to define the elements of the Book object, and return a string listing an individual book
+/**
+ * LaVonne Patoir, CEN3024C-14320, 11/14/24
+ * Software Development I
+ * The purpose of this class is to define the elements of the Book object, and return a string listing an individual book
+ */
 
 public class Book {
     private String bookID;
@@ -11,8 +13,17 @@ public class Book {
     private String bookStatus; // "checked in" or "out"
     private LocalDate dueDate;
 
+    /**
+     * Initializes a new book object with the provided details.
+     *
+     * @param bookID  the unique identifier for the book
+     * @param title   the title of the book
+     * @param author  the author of the book
+     * @param status  "checked in" or "checked out"
+     * @param dueDate
+     */
+
     public Book(String bookID, String title, String author, String status, LocalDate dueDate) {
-    //Purpose: initializes new book object; Arguments: Strings title, author, bookID, status and a LocalDate; Return Value: none
         this.bookID = bookID;
         this.title = title;
         this.author = author;
@@ -20,25 +31,51 @@ public class Book {
         this.dueDate = dueDate;
     }
 
+    /**
+     * Initializes a new book object with some default values.
+     *
+     * @param bookID  the unique identifier for the book
+     * @param title   the title of the book
+     * @param author  the author of the book
+     */
     public Book(String bookID, String title, String author) {
-    //Purpose: initializes new book object with some default values, Arguments: Strings bookID, title, author; Return Value: none
         this(bookID, title, author, "Checked in", null);
     }
 
+    /**
+     * @return bookID
+     */
     public String getBookID() { return bookID; }
+    /**
+     * @return title
+     */
     public String getTitle() { return title; }
+    /**
+     * @return author
+     */
     public String getAuthor() { return author; }
+    /**
+     * @return bookStatus
+     */
     public String getBookStatus() { return bookStatus; }
+    /**
+     * @return dueDate
+     */
     public LocalDate getDueDate() { return dueDate; }
 
+    /**
+     * Marks book as checked in and resets the due date
+     */
     public void checkinBook() {
-    //Purpose: Marks book as checked in and resets the due date; Arguments: none; Return Value: none
         this.bookStatus = "Checked in";
         this.dueDate = null;
     }
 
+    /**
+     * Marks book as checked out and sets a due date for 4 weeks later
+     * @return "false" if already checked out, "true" if able to run function
+     */
     public boolean checkoutBook() {
-    //Purpose: Marks book as checked out and sets a due date 4 weeks later; Arguments: none; Return Value: boolean
         if (this.bookStatus.equals("Checked out")) {
             return false;
         }
@@ -47,9 +84,13 @@ public class Book {
         return true;
     }
 
+    /**
+     * Returns a string containing the book's details.
+     *
+     * @return a string containing the book's ID, title, author, status, and due date
+     */
     @Override
     public String toString() {
-    //Purpose: Returns a string containing a book's details; Arguments: none; Return Value: String
         String dueDateString = (dueDate != null) ? dueDate.toString() : "No due date";
         return bookID + ", " + author + ", " + title + ", " + bookStatus + ", Due: " + dueDateString;
     }
